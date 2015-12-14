@@ -33,33 +33,29 @@ public struct EnvironmentManager<T: Environment> {
   public init(userDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults(), bundle: NSBundle = NSBundle.mainBundle()) {
     self.userDefaults = userDefaults
     self.bundle = bundle
-    self.loadEnvironments()
-    self.loadCurrentEnvironment()
+    self.environments = self.loadEnvironments()
+    self.currentEnvironment = self.loadCurrentEnvironment()
   }
   
   ///Loads the environments from Environments.plist into the 'environments' property.
-  private mutating func loadEnvironments() {
-    let path = self.bundle.pathForResource("Environments", ofType: "plist")!
-    if let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 {
-      for value in environmentValues {
-        if let environment = T(environment: value) {
-          self.environments.append(environment)
-        }
-      }
+  private func loadEnvironments() -> [T] {
+    guard let path = self.bundle.pathForResource("Environments", ofType: "plist") else { assert(false, "Environments.plist does not exist!") }
+    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 else { assert(false, "No environments found!") }
+    var environments = [T]()
+    for value in environmentValues {
+      guard let environment = T(environment: value) else { assert(false, "Environment invalid: \(value)") }
+      environments.append(environment)
     }
-    else {
-      print("No environments found!")
-    }
+    return environments
   }
   
   //Loads the current environment from user defaults or defaults to first environment
-  private mutating func loadCurrentEnvironment() {
+  private func loadCurrentEnvironment() -> T {
+    let defaultEnvironment = self.environments.first!
     if let name = self.userDefaults.objectForKey(self.userDefaultsKey) as? String, savedEnvironment = self.environments.filter({ $0.name == name }).first {
-      self.currentEnvironment = savedEnvironment
+      return savedEnvironment
     }
-    else {
-      self.currentEnvironment = self.environments[0]
-    }
+    return defaultEnvironment
   }
   
 }
