@@ -40,19 +40,24 @@ public struct EnvironmentManager<T: Environment> {
   ///Loads the environments from Environments.plist into the 'environments' property.
   private func loadEnvironments() -> [T] {
     let path = self.bundle.pathForResource("Environments", ofType: "plist")!
-    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] else {
+    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 else {
       assert(false, "No environments found!")
     }
-    return environmentValues.map{ T(environment: $0)! }
+    var environments = [T]()
+    for value in environmentValues {
+      if let environment = T(environment: value) {
+        environments.append(environment)
+      }
+    }
+    return environments
   }
   
   //Loads the current environment from user defaults or defaults to first environment
-  private func loadCurrentEnvironment() -> T? {
-    guard var environment = self.environments.first else { return nil }
+  private func loadCurrentEnvironment() -> T {
     if let name = self.userDefaults.objectForKey(self.userDefaultsKey) as? String, savedEnvironment = self.environments.filter({ $0.name == name }).first {
-      environment = savedEnvironment
+      return savedEnvironment
     }
-    return environment
+    return self.environments[0]
   }
   
 }
