@@ -23,41 +23,43 @@ public struct EnvironmentManager<T: Environment> {
   private var userDefaults = NSUserDefaults.standardUserDefaults()
   private var bundle: NSBundle
   
-  public var environments: [T]!
-  public var currentEnvironment: T? {
+  public var environments = [T]()
+  public var currentEnvironment: T! {
     didSet {
-      self.userDefaults.setValue(self.currentEnvironment?.name, forKey: self.userDefaultsKey)
+      self.userDefaults.setValue(self.currentEnvironment.name, forKey: self.userDefaultsKey)
     }
   }
   
   public init(userDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults(), bundle: NSBundle = NSBundle.mainBundle()) {
     self.userDefaults = userDefaults
     self.bundle = bundle
-    self.environments = self.loadEnvironments()
-    self.currentEnvironment = self.loadCurrentEnvironment()
+    self.loadEnvironments()
+    self.loadCurrentEnvironment()
   }
   
   ///Loads the environments from Environments.plist into the 'environments' property.
-  private func loadEnvironments() -> [T] {
+  private mutating func loadEnvironments() {
     let path = self.bundle.pathForResource("Environments", ofType: "plist")!
-    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 else {
-      assert(false, "No environments found!")
-    }
-    var environments = [T]()
-    for value in environmentValues {
-      if let environment = T(environment: value) {
-        environments.append(environment)
+    if let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 {
+      for value in environmentValues {
+        if let environment = T(environment: value) {
+          self.environments.append(environment)
+        }
       }
     }
-    return environments
+    else {
+      print("No environments found!")
+    }
   }
   
   //Loads the current environment from user defaults or defaults to first environment
-  private func loadCurrentEnvironment() -> T {
+  private mutating func loadCurrentEnvironment() {
     if let name = self.userDefaults.objectForKey(self.userDefaultsKey) as? String, savedEnvironment = self.environments.filter({ $0.name == name }).first {
-      return savedEnvironment
+      self.currentEnvironment = savedEnvironment
     }
-    return self.environments[0]
+    else {
+      self.currentEnvironment = self.environments[0]
+    }
   }
   
 }
