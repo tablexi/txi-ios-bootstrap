@@ -1,9 +1,9 @@
 //
 //  Environment.swift
-//  Thinkspan
+//  Table XI
 //
 //  Created by Ed Lafoy on 8/5/15.
-//  Copyright © 2015 ThinkSpan. All rights reserved.
+//  Copyright © 2015 Table XI. All rights reserved.
 //
 
 import Foundation

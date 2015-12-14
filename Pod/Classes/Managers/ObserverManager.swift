@@ -1,9 +1,9 @@
 //
 //  TypedNotifications.swift
-//  Thinkspan
+//  Table XI
 //
 //  Created by Daniel Hodos on 7/3/15.
-//  Copyright © 2015 ThinkSpan. All rights reserved.
+//  Copyright © 2015 Table XI. All rights reserved.
 
 import Foundation
 

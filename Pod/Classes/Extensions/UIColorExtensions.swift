@@ -1,9 +1,9 @@
 //
 //  UIColorExtensions.swift
-//  ThinkSpan
+//  Table XI
 //
 //  Created by Ed Lafoy on 9/19/14.
-//  Copyright (c) 2014 ThinkSpan. All rights reserved.
+//  Copyright (c) 2014 Table XI. All rights reserved.
 //
 
 import UIKit

@@ -1,9 +1,9 @@
 //
 //  LogManager.swift
-//  Thinkspan
+//  Table XI
 //
 //  Created by Ed Lafoy on 7/27/15.
-//  Copyright © 2015 ThinkSpan. All rights reserved.
+//  Copyright © 2015 Table XI. All rights reserved.
 //
 
 import Foundation
