@@ -1,0 +1,30 @@
+PODS:
+  - Nimble (3.0.0)
+  - Quick (0.8.0)
+  - TXIBootstrap (0.1.1):
+    - TXIBootstrap/EnvironmentManager (= 0.1.1)
+    - TXIBootstrap/LogManager (= 0.1.1)
+    - TXIBootstrap/ObserverManager (= 0.1.1)
+    - TXIBootstrap/UIColorExtensions (= 0.1.1)
+  - TXIBootstrap/EnvironmentManager (0.1.1):
+    - TXIBootstrap/LogManager
+  - TXIBootstrap/LogManager (0.1.1):
+    - TXIBootstrap/UIColorExtensions
+  - TXIBootstrap/ObserverManager (0.1.1)
+  - TXIBootstrap/UIColorExtensions (0.1.1)
+
+DEPENDENCIES:
+  - Nimble
+  - Quick
+  - TXIBootstrap (from `../`)
+
+EXTERNAL SOURCES:
+  TXIBootstrap:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Nimble: 4c353d43735b38b545cbb4cb91504588eb5de926
+  Quick: 563d0f6ec5f72e394645adb377708639b7dd38ab
+  TXIBootstrap: ff27f48fac2e6626da5b0053dc631edc1ecaf4a7
+
+COCOAPODS: 0.39.0
