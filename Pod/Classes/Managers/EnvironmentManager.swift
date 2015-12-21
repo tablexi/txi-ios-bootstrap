@@ -25,8 +25,14 @@ public struct EnvironmentManager<T: Environment> {
   
   public var environments = [T]()
   public var currentEnvironment: T! {
-    didSet {
-      self.userDefaults.setValue(self.currentEnvironment.name, forKey: self.userDefaultsKey)
+    get {
+      if let name = self.userDefaults.objectForKey(self.userDefaultsKey) as? String, savedEnvironment = self.environments.filter({ $0.name == name }).first {
+        return savedEnvironment
+      }
+      return self.environments.first!
+    }
+    set {
+      self.userDefaults.setValue(newValue.name, forKey: self.userDefaultsKey)
     }
   }
   
@@ -34,7 +40,6 @@ public struct EnvironmentManager<T: Environment> {
     self.userDefaults = userDefaults
     self.bundle = bundle
     self.environments = self.loadEnvironments()
-    self.currentEnvironment = self.loadCurrentEnvironment()
   }
   
   ///Loads the environments from Environments.plist into the 'environments' property.
@@ -47,15 +52,6 @@ public struct EnvironmentManager<T: Environment> {
       environments.append(environment)
     }
     return environments
-  }
-  
-  //Loads the current environment from user defaults or defaults to first environment
-  private func loadCurrentEnvironment() -> T {
-    let defaultEnvironment = self.environments.first!
-    if let name = self.userDefaults.objectForKey(self.userDefaultsKey) as? String, savedEnvironment = self.environments.filter({ $0.name == name }).first {
-      return savedEnvironment
-    }
-    return defaultEnvironment
   }
   
 }

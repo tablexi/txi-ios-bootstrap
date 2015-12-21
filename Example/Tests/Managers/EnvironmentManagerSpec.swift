@@ -17,7 +17,7 @@ class EnvironmentManagerSpec: QuickSpec {
   let userDefaultsKey = "environment"
   
   var environmentValues: [[String: AnyObject]] {
-    let path = bundle.pathForResource("Environments", ofType: "plist")!
+    let path = self.bundle.pathForResource("Environments", ofType: "plist")!
     let values = NSArray(contentsOfFile: path) as? [[String: AnyObject]]
     return values ?? []
   }
@@ -27,6 +27,7 @@ class EnvironmentManagerSpec: QuickSpec {
 
   override func spec() {
     beforeEach {
+      self.userDefaults.setValue("", forKey: self.userDefaultsKey)
       expect(self.environmentValues.count).to(beGreaterThan(0))
       self.environmentManager = EnvironmentManager<TestEnvironment>(userDefaults: self.userDefaults, bundle: self.bundle)
     }
@@ -49,6 +50,16 @@ class EnvironmentManagerSpec: QuickSpec {
       
       self.environmentManager.currentEnvironment = environment2
       expect(self.userDefaults.valueForKey(self.userDefaultsKey) as? String).to(equal(environment2.name))
+    }
+    
+    it("shows the correct current environment if it's changed elsewhere by another instance of EnvironmentManager") {
+      let otherEnvironmentManager = EnvironmentManager<TestEnvironment>(userDefaults: self.userDefaults, bundle: self.bundle)
+      
+      expect(otherEnvironmentManager.currentEnvironment).to(equal(self.environmentManager.currentEnvironment))
+      expect(otherEnvironmentManager.currentEnvironment).to(equal(self.environmentManager.environments[0]))
+      
+      self.environmentManager.currentEnvironment = self.environmentManager.environments[1]
+      expect(otherEnvironmentManager.currentEnvironment).to(equal(self.environmentManager.currentEnvironment))
     }
     
     context("with no stored environment") {
