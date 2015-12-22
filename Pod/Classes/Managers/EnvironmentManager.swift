@@ -44,11 +44,20 @@ public struct EnvironmentManager<T: Environment> {
   
   ///Loads the environments from Environments.plist into the 'environments' property.
   private func loadEnvironments() -> [T] {
-    guard let path = self.bundle.pathForResource("Environments", ofType: "plist") else { assert(false, "Environments.plist does not exist!") }
-    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 else { assert(false, "No environments found!") }
     var environments = [T]()
+    guard let path = self.bundle.pathForResource("Environments", ofType: "plist") else {
+      assert(false, "Environments.plist does not exist!")
+      return environments
+    }
+    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 else {
+      assert(false, "No environments found!")
+      return environments
+    }
     for value in environmentValues {
-      guard let environment = T(environment: value) else { assert(false, "Environment invalid: \(value)") }
+      guard let environment = T(environment: value) else {
+        assert(false, "Environment invalid: \(value)")
+        return environments
+      }
       environments.append(environment)
     }
     return environments
