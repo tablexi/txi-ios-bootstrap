@@ -11,8 +11,8 @@ import UIKit
 
 /// This class uses XCodeColors to make the debugger pretty
 
-struct LogManagerNotification {
-  static let DidPrint = Notification<String>()
+public struct LogManagerNotification {
+  public static let DidPrint = Notification<String>()
 }
 
 struct LogManager {
