@@ -2,6 +2,7 @@
 Pod::Spec.new do |s|
   s.name             = "TXIBootstrap"
   s.version          = "0.1.2"
+  s.swift_version    = "3.3"
   s.summary          = "Collection of tools used across projects"
 
   s.description      = <<-DESC

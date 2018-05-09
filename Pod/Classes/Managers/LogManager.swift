@@ -34,9 +34,9 @@ struct LogManager {
     if let message = message {
       msg = "\(message)"
     }
-    let final = "\(ESCAPE)\(colorToRGBString(color))\(msg)\(RESET)"
+    let final = "\(ESCAPE)\(colorToRGBString(color: color))\(msg)\(RESET)"
     print(final)
-    LogManagerNotification.DidPrint.post(final)
+    LogManagerNotification.DidPrint.post(value: final)
   }
 
   //creates a string from a color for the debugger format
@@ -55,21 +55,21 @@ struct LogManager {
 }
 
 public func logYellow<T>(msg: T?) {
-  LogManager.logWithColor(LogManager.yellowColor, message: msg)
+  LogManager.logWithColor(color: LogManager.yellowColor, message: msg)
 }
 
 public func logRed<T>(msg: T?) {
-  LogManager.logWithColor(LogManager.redColor, message: msg)
+  LogManager.logWithColor(color: LogManager.redColor, message: msg)
 }
 
 public func logGreen<T>(msg: T?) {
-  LogManager.logWithColor(LogManager.greenColor, message: msg)
+  LogManager.logWithColor(color: LogManager.greenColor, message: msg)
 }
 
 public func logGray<T>(msg: T?) {
-  LogManager.logWithColor(LogManager.grayColor, message: msg)
+  LogManager.logWithColor(color: LogManager.grayColor, message: msg)
 }
 
 public func logBlue<T>(msg: T?) {
-  LogManager.logWithColor(LogManager.blueColor, message: msg)
+  LogManager.logWithColor(color: LogManager.blueColor, message: msg)
 }
