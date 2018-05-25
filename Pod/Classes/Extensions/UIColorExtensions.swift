@@ -15,7 +15,7 @@ extension UIColor {
     var blue: CGFloat  = 0.0
     
     if rgba.hasPrefix("#") {
-      let index = rgba.startIndex.advanced(by: 1)
+      let index = rgba.startIndex.index(string.startIndex, offsetBy: 1)
       let hex = rgba.substring(from: index)
       let scanner = Scanner(string: hex)
       var hexValue: CUnsignedLongLong = 0
