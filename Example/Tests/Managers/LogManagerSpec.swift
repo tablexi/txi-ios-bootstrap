@@ -15,11 +15,11 @@ class LogManagerSpec: QuickSpec {
   override func spec() {
     
     it("prints logs") {
-      logYellow("hello")
-      logRed("hello")
-      logBlue("hello")
-      logGreen("hello")
-      logGray("hello")
+      logYellow(msg: "hello")
+      logRed(msg: "hello")
+      logBlue(msg: "hello")
+      logGreen(msg: "hello")
+      logGray(msg: "hello")
     }
     
   }

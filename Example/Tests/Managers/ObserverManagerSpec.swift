@@ -25,12 +25,12 @@ class ObserverManagerSpec: QuickSpec {
     
     it("sends and observes notifications") {
       let value = "hello"
-      let notification = Notification<String>()
+      let notification = TXIBootstrap.Notification<String>()
       var received = ""
-      observerManager.observeNotification(notification) { string in
+      observerManager.observeNotification(notification: notification) { string in
         received = string
       }
-      notification.post(value)
+      notification.post(value: value)
       expect(received).to(equal(value))
     }
     

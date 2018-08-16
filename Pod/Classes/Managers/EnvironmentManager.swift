@@ -20,13 +20,13 @@ public protocol Environment: Equatable {
 public struct EnvironmentManager<T: Environment> {
   
   private let userDefaultsKey = "environment"
-  private var userDefaults = NSUserDefaults.standardUserDefaults()
-  private var bundle: NSBundle
+  private var userDefaults = UserDefaults.standard
+  private var bundle: Bundle
   
   public var environments = [T]()
   public var currentEnvironment: T! {
     get {
-      if let name = self.userDefaults.objectForKey(self.userDefaultsKey) as? String, savedEnvironment = self.environments.filter({ $0.name == name }).first {
+      if let name = self.userDefaults.object(forKey: self.userDefaultsKey) as? String, let savedEnvironment = self.environments.filter({ $0.name == name }).first {
         return savedEnvironment
       }
       return self.environments.first!
@@ -36,7 +36,7 @@ public struct EnvironmentManager<T: Environment> {
     }
   }
   
-  public init(userDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults(), bundle: NSBundle = NSBundle.mainBundle()) {
+  public init(userDefaults: UserDefaults = UserDefaults.standard, bundle: Bundle = Bundle.main) {
     self.userDefaults = userDefaults
     self.bundle = bundle
     self.environments = self.loadEnvironments()
@@ -45,11 +45,11 @@ public struct EnvironmentManager<T: Environment> {
   ///Loads the environments from Environments.plist into the 'environments' property.
   private func loadEnvironments() -> [T] {
     var environments = [T]()
-    guard let path = self.bundle.pathForResource("Environments", ofType: "plist") else {
+    guard let path = self.bundle.path(forResource: "Environments", ofType: "plist") else {
       assert(false, "Environments.plist does not exist!")
       return environments
     }
-    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]] where environmentValues.count > 0 else {
+    guard let environmentValues = NSArray(contentsOfFile: path) as? [[String: AnyObject]], environmentValues.count > 0 else {
       assert(false, "No environments found!")
       return environments
     }

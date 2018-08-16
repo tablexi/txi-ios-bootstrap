@@ -12,12 +12,12 @@ import TXIBootstrap
 
 class EnvironmentManagerSpec: QuickSpec {
   
-  var bundle: NSBundle { return NSBundle(forClass: self.dynamicType) }
-  let userDefaults = NSUserDefaults(suiteName: "test")!
+  var bundle: Bundle { return Bundle(for: type(of: self)) }
+  let userDefaults = UserDefaults(suiteName: "test")!
   let userDefaultsKey = "environment"
   
   var environmentValues: [[String: AnyObject]] {
-    let path = self.bundle.pathForResource("Environments", ofType: "plist")!
+    let path = self.bundle.path(forResource: "Environments", ofType: "plist")!
     let values = NSArray(contentsOfFile: path) as? [[String: AnyObject]]
     return values ?? []
   }
@@ -37,8 +37,8 @@ class EnvironmentManagerSpec: QuickSpec {
     }
     
     it("populates valid environments") {
-      self.validateEnvironmentAtIndex(0)
-      self.validateEnvironmentAtIndex(1)
+      self.validateEnvironmentAtIndex(index: 0)
+      self.validateEnvironmentAtIndex(index: 1)
     }
     
     it("saves the selected environment in user defaults") {
@@ -46,10 +46,10 @@ class EnvironmentManagerSpec: QuickSpec {
       let environment2 = self.environmentManager.environments[1]
       
       self.environmentManager.currentEnvironment = environment1
-      expect(self.userDefaults.valueForKey(self.userDefaultsKey) as? String).to(equal(environment1.name))
+      expect(self.userDefaults.value(forKey: self.userDefaultsKey) as? String).to(equal(environment1.name))
       
       self.environmentManager.currentEnvironment = environment2
-      expect(self.userDefaults.valueForKey(self.userDefaultsKey) as? String).to(equal(environment2.name))
+      expect(self.userDefaults.value(forKey: self.userDefaultsKey) as? String).to(equal(environment2.name))
     }
     
     it("shows the correct current environment if it's changed elsewhere by another instance of EnvironmentManager") {
@@ -92,8 +92,8 @@ class EnvironmentManagerSpec: QuickSpec {
     let environment = environmentManager.environments[index]
     let values = environmentValues[index]
     guard let name = values["Name"] as? String,
-      domain = values["Domain"] as? String,
-      key = values["Key"] as? String else { return fail() }
+      let domain = values["Domain"] as? String,
+      let key = values["Key"] as? String else { return fail() }
     expect(environment.name).to(equal(name))
     expect(environment.domain).to(equal(domain))
     expect(environment.key).to(equal(key))
@@ -107,7 +107,7 @@ class TestEnvironment: Environment, CustomDebugStringConvertible {
   var key: String = ""
   
   required init?(environment: [String: AnyObject]) {
-    guard let name = environment["Name"] as? String, domain = environment["Domain"] as? String, key = environment["Key"] as? String else { return nil }
+    guard let name = environment["Name"] as? String, let domain = environment["Domain"] as? String, let key = environment["Key"] as? String else { return nil }
     self.name = name
     self.domain = domain
     self.key = key

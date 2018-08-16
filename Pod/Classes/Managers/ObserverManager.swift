@@ -22,7 +22,7 @@ public struct Notification<A> {
   
   /// The name of the notification; we generate a random UUID here, since the Notification
   /// object's identity alone can be used for uniqueness.
-  let name = NSUUID().UUIDString
+  let name = NSUUID().uuidString
   
   /// Posts this notification with the given payload, from the given object.
   ///
@@ -31,7 +31,7 @@ public struct Notification<A> {
   ///   - object: An optional object that is posting this Notification; often this is nil.
   public func post(value: A, fromObject object: AnyObject?) {
     let userInfo = ["value": Box(value)]
-    NSNotificationCenter.defaultCenter().postNotificationName(name, object: object, userInfo: userInfo)
+    NotificationCenter.default.post(name: NSNotification.Name(rawValue: name), object: object, userInfo: userInfo)
   }
   
   /// Posts this notification with the given payload, but not from any specific object.
@@ -39,7 +39,7 @@ public struct Notification<A> {
   /// - Parameters:
   ///   - value: A payload (defined when the Notification is initialized).
   public func post(value: A) {
-    post(value, fromObject: nil)
+    post(value: value, fromObject: nil)
   }
 }
 
@@ -59,8 +59,8 @@ class NotificationObserver {
   ///   - notification: a Notification object
   ///   - object: an optional Object; if nil is passed, then the object that posts the notification will not matter.
   ///   - block: a closure that gets called with the Notification's payload
-  init<A>(_ notification: Notification<A>, fromObject object: AnyObject?, block aBlock: A -> ()) {
-    observer = NSNotificationCenter.defaultCenter().addObserverForName(notification.name, object: object, queue: nil) { note in
+  init<A>(_ notification: Notification<A>, fromObject object: AnyObject?, block aBlock: @escaping (A) -> ()) {
+    observer = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: notification.name), object: object, queue: nil) { note in
       if let value = (note.userInfo?["value"] as? Box<A>)?.unbox {
         aBlock(value)
       } else {
@@ -74,14 +74,14 @@ class NotificationObserver {
   /// Parameters:
   ///   - notification: a Notification object
   ///   - block: a closure that gets called with the Notification's payload
-  convenience init<A>(_ notification: Notification<A>, block aBlock: A -> ()) {
+  convenience init<A>(_ notification: Notification<A>, block aBlock: @escaping (A) -> ()) {
     self.init(notification, fromObject: nil, block: aBlock)
   }
   
   /// When this object goes out of scope, it will remove the observer from the notification
   /// center, i.e. it will clean up after itself.
   deinit {
-    NSNotificationCenter.defaultCenter().removeObserver(observer)
+    NotificationCenter.default.removeObserver(observer)
   }
   
 }
@@ -91,11 +91,11 @@ public class ObserverManager {
   
   public init(){}
   
-  public func observeNotification<A>(notification: Notification<A>, block aBlock: A -> ()) {
-    observeNotification(notification, fromObject: nil, block: aBlock)
+  public func observeNotification<A>(notification: Notification<A>, block aBlock: @escaping (A) -> ()) {
+    observeNotification(notification: notification, fromObject: nil, block: aBlock)
   }
   
-  public func observeNotification<A>(notification: Notification<A>, fromObject object: AnyObject?, block aBlock: A -> ()) {
+  public func observeNotification<A>(notification: Notification<A>, fromObject object: AnyObject?, block aBlock: @escaping (A) -> ()) {
     let newObserver = NotificationObserver(notification, fromObject: object, block: aBlock)
     self.observers.append(newObserver)
   }
